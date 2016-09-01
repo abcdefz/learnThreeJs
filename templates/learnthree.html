@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="{{ url_for('static', filename='three.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='stat.js') }}"></script>
+		
+        
+        <script type="text/javascript">
+			/*
+			var requestAnimationFrame = window.requestAnimationFrame 
+                    || window.mozRequestAnimationFrame
+                    || window.webkitRequestAnimationFrame
+                    || window.msRequestAnimationFrame;
+            window.requestAnimationFrame = requestAnimationFrame;
+			*/
+			
+			var scene = null;
+			var camera = null;
+			var renderer = null;
+			var cubeMesh = null;
+			var id = null; // setInterval(draw, 20);
+			var stat = null;
+				
+            function init() {
+				
+				var width  = window.innerWidth;
+				var height = window.innerHeight;
+				
+				// renderer (canvas)
+				var renderer = new THREE.WebGLRenderer({
+					canvas: document.getElementById('mainCanvas')
+				});
+				//renderer.setSize( width, height );
+				//document.body.appendChild( renderer.domElement );
+				
+				// create a scene
+				var scene = new THREE.Scene();
+				
+				// set a camera
+				var viewAngle = 80;
+				var aspect = width / height;
+				var near	= 1;
+				var far	 = 1000;
+				var camera = new THREE.PerspectiveCamera( viewAngle, aspect, near, far );
+				camera.position.z = 500;
+				scene.add( camera );
+				
+				// set a directional light
+				var directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
+				directionalLight.position.z = 3;
+				scene.add( directionalLight );
+
+				// cube geometry (200 x 200 x 200);
+				var geometry = new THREE.CubeGeometry(200, 200, 200);
+				var material = new THREE.MeshLambertMaterial( { color: 0x660000 } );
+				var cubeMesh = new THREE.Mesh( geometry, material);
+				scene.add( cubeMesh );
+				
+				renderer.render( scene, camera );
+				
+				id = setInterval(draw, 20);
+				
+				window.addEventListener('mousemove', function (e) {
+					var mouseX = ( e.clientX - width / 2 );
+					var mouseY = ( e.clientY - height / 2 );
+					cubeMesh.rotation.x = mouseY * 0.005;
+					cubeMesh.rotation.y = mouseX * 0.005;
+					
+					renderer.render( scene, camera );
+				}, false);
+				
+			}
+			
+			function draw() {
+			/*
+				cubeMesh.rotation.y = (cubeMesh.rotation.y + 0.01) % (Math.PI * 2);
+				renderer.render(scene, camera);
+			*/
+			}
+			
+			function stop() {
+				if (id !== null) {
+					clearInterval(id);
+					id = null;
+				}
+			}
+        </script>
+    </head>
+    
+    <body onload="init()">
+        <canvas id="mainCanvas" width="400px" height="300px" ></canvas>
+		<button id="stopBtn" onclick="stop()">Stop</button>
+    </body>
+</html>
