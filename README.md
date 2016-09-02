@@ -10,5 +10,3 @@ using falsk to run server:
 2 http://localhost:5000/ in explorer, you can get "template/learnthree.html", just a cube
 
 3 http://localhost:5000/cubewihtpng in explorer, you can get "template/cubewithpng.html", a cube with different images on each surface
-
-http://localhost:5000/
