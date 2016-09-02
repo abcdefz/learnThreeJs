@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cube with Image</title>
+<style>
+body {
+	background: #333;
+	overflow: hidden;
+}
+</style>
+<script type="text/javascript" src="{{ url_for('static', filename='Three.js') }}"></script>
+<script>
+function init() {
+	var viewAngle = 80;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	var near = 1;
+	var far = 1000;
+	
+	// renderer
+	var renderer = new THREE.WebGLRenderer({
+		canvas: document.getElementById('mainCanvas')
+	});
+	
+	// scene
+	var scene = new THREE.Scene();
+	
+	// camera
+	var aspect = width/height;
+	var camera = new THREE.PerspectiveCamera( viewAngle, aspect, near, far );
+	camera.position.z = 500;
+	scene.add( camera );
+	
+	// light
+	var directionalLight = new THREE.DirectionalLight( 0xff0000, 5 );
+	directionalLight.position.z = 3;
+	scene.add( directionalLight );
+	
+	// cube
+	var geometry = new THREE.CubeGeometry(200, 200, 200);
+	
+	var textureLoader = new THREE.TextureLoader();
+	var texture1 = textureLoader.load('{{ url_for('static', filename='img/0.png')}}');
+	var texture2 = textureLoader.load('{{ url_for('static', filename='img/1.png')}}');
+	var texture3 = textureLoader.load('{{ url_for('static', filename='img/2.png')}}');
+	var texture4 = textureLoader.load('{{ url_for('static', filename='img/3.png')}}');
+	var texture5 = textureLoader.load('{{ url_for('static', filename='img/4.png')}}');
+	var texture6 = textureLoader.load('{{ url_for('static', filename='img/5.png')}}');
+
+	// 每一个面不同的材质
+	var materials = [];
+	materials.push(new THREE.MeshLambertMaterial({ map: texture1, overdraw: true}));
+	materials.push(new THREE.MeshLambertMaterial({ map: texture2, overdraw: true }));
+	materials.push(new THREE.MeshLambertMaterial({ map: texture3, overdraw: true }));
+	materials.push(new THREE.MeshLambertMaterial({ map: texture4, overdraw: true }));
+	materials.push(new THREE.MeshLambertMaterial({ map: texture5, overdraw: true }));
+	materials.push(new THREE.MeshLambertMaterial({ map: texture6, overdraw: true }));
+
+	// 六个面全部一个材质
+	var material = new THREE.MeshLambertMaterial({
+		//color: 0x660000,
+		map: texture1 //, texture2, texture3, texture4, texture5, texture6,],
+	});
+	/*	
+	var material = new THREE.MeshFaceMaterial();
+
+	*/
+	var cubeMesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial(materials) );
+	scene.add( cubeMesh );
+	
+	renderer.render( scene, camera );
+	
+	window.addEventListener('mousemove', function (e) {
+		var mouseX = ( e.clientX - width/2 );
+		var mouseY = ( e.clientY - height/2 );
+		cubeMesh.rotation.x = mouseY * 0.005;
+		cubeMesh.rotation.y = mouseX * 0.005;
+		
+		renderer.render( scene, camera );
+	}, false);
+}
+</script>
+</head>
+<body onload="init()">
+	<canvas id="mainCanvas" width="400px" height="300px" ></canvas>
+</body>
+</html>
